@@ -20,6 +20,7 @@ namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Exception\RuntimeException;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Configuration.
@@ -40,6 +41,7 @@ final class Config
     private $excludedDirs;
     private $excludedNames;
     private $enabledExtractors;
+    private $kernel;
 
     private $keepOldMessages;
     private $loadResources;
@@ -92,7 +94,7 @@ final class Config
      */
     public function getTranslationsDir()
     {
-        return $this->translationsDir;
+        return $this->locateDirs([$this->translationsDir])[0];
     }
 
     /**
@@ -166,7 +168,7 @@ final class Config
      */
     public function getScanDirs()
     {
-        return $this->scanDirs;
+        return $this->locateDirs($this->scanDirs);
     }
 
     /**
@@ -207,5 +209,36 @@ final class Config
     public function getLoadResources()
     {
         return $this->loadResources;
+    }
+
+    /**
+     * @return Kernel
+     */
+    public function getKernel()
+    {
+        return $this->kernel;
+    }
+
+    /**
+     * @param Kernel $kernel
+     */
+    public function setKernel($kernel)
+    {
+        $this->kernel = $kernel;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function locateDirs(array $dirs)
+    {
+        $kernel = $this->getKernel();
+        return array_map(function ($dir) use ($kernel) {
+            if (0 !== strpos($dir, '@')) {
+                return $dir;
+            }
+
+            return $kernel->locateResource($dir);
+        }, $dirs);
     }
 }

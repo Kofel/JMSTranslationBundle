@@ -19,13 +19,17 @@
 namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
+use Symfony\Component\HttpKernel\Kernel;
 
 class ConfigFactory
 {
+    private $kernel;
+
     private $builders;
 
-    public function __construct(array $builders = array())
+    public function __construct(Kernel $kernel, array $builders = array())
     {
+        $this->kernel = $kernel;
         $this->builders = $builders;
     }
 
@@ -45,7 +49,9 @@ class ConfigFactory
 
     public function getConfig($name, $locale)
     {
-        return $this->getBuilder($name)->setLocale($locale)->getConfig();
+        $config = $this->getBuilder($name)->setLocale($locale)->getConfig();
+        $config->setKernel($this->kernel);
+        return $config;
     }
 
     public function addBuilder($name, $builder)
