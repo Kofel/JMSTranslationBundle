@@ -48,7 +48,7 @@ class ApiController
 
     /**
      * @var Creator
-     * @DI\Inject("adsum_back_office_translation.creator")
+     * @DI\Inject("jms_translation.creator")
      */
     protected $creator;
 
