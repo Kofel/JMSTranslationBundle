@@ -45,9 +45,10 @@ final class Config
 
     private $keepOldMessages;
     private $loadResources;
+    private $outputOptions;
 
 
-    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
+    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources, array $outputOptions)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
@@ -87,6 +88,7 @@ final class Config
         $this->enabledExtractors = $enabledExtractors;
         $this->keepOldMessages = $keepOldMessages;
         $this->loadResources = $loadResources;
+        $this->outputOptions = $outputOptions;
     }
 
     /**
@@ -210,7 +212,7 @@ final class Config
     {
         return $this->loadResources;
     }
-
+    
     /**
      * @return Kernel
      */
@@ -240,5 +242,13 @@ final class Config
 
             return $kernel->locateResource($dir);
         }, $dirs);
+    }
+
+    /**
+     * @return array
+     */
+    public function getOutputOptions($format = null)
+    {
+        return $format && isset($this->outputOptions[$format]) ? $this->outputOptions[$format] : $this->outputOptions;
     }
 }

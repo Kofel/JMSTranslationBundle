@@ -88,6 +88,6 @@ class Creator
         $message = new Message($id, $domain);
         $catalogue->add($message);
 
-        $this->writer->write($catalogue, $domain, $file, $format);
+        $this->writer->write($catalogue, $domain, $file, $format, []);
     }
 }
