@@ -80,7 +80,8 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
         foreach ($locales as $locale) {
             $config = $builder->setLocale($locale)->getConfig();
-            
+            $config->setKernel($this->getContainer()->get('kernel'));
+
             $output->writeln(sprintf('Extracting Translations for locale <info>%s</info>', $locale));
             $output->writeln(sprintf('Keep old translations: <info>%s</info>', $config->isKeepOldMessages() ? 'Yes' : 'No'));
             $output->writeln(sprintf('Output-Path: <info>%s</info>', $config->getTranslationsDir()));
@@ -105,7 +106,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
                 if($input->hasParameterOption('--verbose')){
                     foreach($changeSet->getAddedMessages() as $message){
                         $output->writeln($message->getId(). '-> '.$message->getDesc());
-                    }   
+                    }
                 }
 
                 if ($config->isKeepOldMessages()) {
@@ -115,7 +116,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
                     if($input->hasParameterOption('--verbose')){
                         foreach($changeSet->getDeletedMessages() as $message){
                             $output->writeln($message->getId(). '-> '.$message->getDesc());
-                        }   
+                        }
                     }
                 }
 
@@ -197,11 +198,11 @@ class ExtractTranslationCommand extends ContainerAwareCommand
         if ($loadResource = $input->getOption('external-translations-dir')) {
             $builder->setLoadResources($loadResource);
         }
-                
+
         if ($addDate = $input->getOption('add-date')) {
             $builder->setOutputOption('xlf', 'add_date', (boolean) $addDate);
         }
-        
+
         if ($addFileRefs = $input->getOption('add-filerefs')) {
             $builder->setOutputOption('xlf', 'add_filerefs', (boolean) $addFileRefs);
         }
